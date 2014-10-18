@@ -2,11 +2,10 @@ from animal import Animal
 
 import nodebox.graphics as ng
 
-
 class Dog(Animal):
     def __init__(self, world, loc, ai):
         Animal.__init__(self, world, loc)
-        self.speed = 3
+        self.speed = 5.0
         self.ai = ai
 
     def update(self):

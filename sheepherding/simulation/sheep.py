@@ -13,22 +13,27 @@ class Sheep(Animal):
 
     def compute_force(self):
         ''' compute the force on the sheep '''
+        def force_func(x, a=1.0, b=1.0):
+            '''
+            force function:
+            x: input
+            a: max distance of force
+            b: force at distance 0
+            '''
+            f = b * (1.0 - (x / a)**0.5)
+            return max(0, f)
+
         def sheep_force(distance):
             # the further away, the less the attractive force
             # note attraction is negative
-            alpha = 1.0
-            x = alpha * distance
-            attraction = 1 / (x+0.1)**0.3 - 0.3
-            repulsion = 10 / (x+0.1)**2
-            total = max(0, min(4, repulsion)) - max(0, min(1, attraction))
-            return total
+            attraction = force_func(distance, 30.0, 1.0)
+            repulsion = force_func(distance, 5.0, 5.0)
+            total = repulsion - attraction
+            return repulsion - attraction
 
         def dog_force(distance):
             # the closer the dog, the stronger the force
-            alpha = 1.0
-            x = alpha * distance
-            force = 10.0 / (x + 0.1) - 0.25 * x + 8
-            return min(10, max(0, force))
+            return force_func(distance, 50.0, 25.0)
 
         fx, fy = 0, 0
         for sheep in self.world.sheeps:
@@ -46,14 +51,14 @@ class Sheep(Animal):
 
         self.force_magnitude = (fx**2 + fy**2)**0.5
         # new angle is influenced by previous: this provides more fluent movement
-        self.force_angle = 0.5 * (atan2(fy, fx) - pi) + 0.5 * self.force_angle
+        self.force_angle = (atan2(fy, fx) - pi)
 
     def compute_speed(self):
-        hi_speed_th = 1.2
+        hi_speed_th = 10.0
         if self.force_magnitude > hi_speed_th:
-            self.speed = 2.5
+            self.speed = 4.0
         else:
-            self.speed = 1.0
+            self.speed = min(self.force_magnitude, 1.0)
 
     def update(self):
         # compute all forces
