@@ -1,5 +1,5 @@
 from ..world.location import Location
-from sheepherding.util import sign
+from sheepherding.util import sign, angle_difference
 
 from math import pi
 
@@ -28,14 +28,14 @@ class TargetFeature(FeatureExtractor):
         result.append(('action:{}'.format(action), 1))
 
         # find the difference in angle
-        angle_diff = (angle_to_target - state.own_angle)
-        angle_diff = sign(angle_diff) * (angle_diff % pi)
+        angle_diff = angle_difference(state.own_angle, angle_to_target)
         # distance to target
         # result.append(('action{}-distance_to_target'.format(action), distance_to_target))
-        # result.append(('distance_to_target', distance_to_target))
+        result.append(('reciprocal_distance_to_target', 1.0/distance_to_target))
         if distance_to_target < state.target_radius:
             result.append(('distance_in_range', 1))
 
         # angle to target
         result.append(('action:{}-anglediff'.format(action), angle_diff))
+
         return result

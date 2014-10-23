@@ -1,5 +1,5 @@
 from nose.tools import *
-from  sheepherding.location import *
+from  sheepherding.world.location import *
 
 from math import pi
 
@@ -22,20 +22,20 @@ class TestLocation:
         assert_almost_equal(self.b.angle(self.a), pi)
         assert_almost_equal(self.a.angle(self.c), pi / 4)
 
-    def test_update(self):
-        d = self.a.update(1, 0)
+    def test_move(self):
+        d = self.a.move(1, 0)
         assert_almost_equal(d.x, 1)
         assert_almost_equal(d.y, 0)
 
-        e = self.a.update(1, 4*pi)
+        e = self.a.move(1, 4*pi)
         assert_almost_equal(e.x, 1)
         assert_almost_equal(e.y, 0)
 
-        f = self.a.update(1, pi/2)
+        f = self.a.move(1, pi/2)
         assert_almost_equal(f.x, 0)
         assert_almost_equal(f.y, 1)
 
-        g = self.b.update(3, pi/2)
+        g = self.b.move(3, pi/2)
         assert_almost_equal(g.x, 3)
         assert_almost_equal(g.y, 3)
 

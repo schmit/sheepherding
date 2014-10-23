@@ -16,7 +16,6 @@ height = 500
 speed = 0.2
 
 
-
 # define AI for dogs, in this case, they share the same AI with a QLearner
 def actions(state):
     result = ['left', 'right', 'none']
@@ -43,7 +42,6 @@ for _ in xrange(nsim):
     world.populate_sheep(1)
     world.populate_dogs(1, dog_ai)
 
-
     world.run(20)
 
     total_reward = sum(sum(dog.ai.rewards) for dog in world.dogs)
@@ -58,6 +56,7 @@ print 'Showing simulation...',
 draw_world(world)
 print 'done'
 
-plt.plot(running_avg(total_rewards))
+print total_rewards
+plt.plot(total_rewards)
 plt.show()
 
