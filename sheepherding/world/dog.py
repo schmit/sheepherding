@@ -20,19 +20,19 @@ class Dog(Animal):
     # Actions for dog
     def faster(self):
         ''' increase speed by 1 up to max_speed '''
-        self.speed = min(self.max_speed, self.speed + 1.0)
+        self.speed = min(self.max_speed, self.speed + 0.3)
 
     def left(self):
         ''' turn left such that full turn takes 1 second '''
-        self.angle += 2*pi / 30.0
+        self.angle += 2*pi / 10.0
 
     def right(self):
         ''' turn right such that full turn takes 1 second '''
-        self.angle -= 2*pi / 30.0
+        self.angle -= 2*pi / 10.0
 
     def slower(self):
         ''' slow down by 1 up to stopping '''
-        self.speed = max(0, self.speed - 1.0)
+        self.speed = max(0, self.speed - 0.3)
 
     # Get move from AI
     def getMove(self):

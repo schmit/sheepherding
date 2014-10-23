@@ -3,22 +3,23 @@ from sheepherding.viz.draw import draw_world
 from sheepherding.ai.ai import GoTargetAI
 from sheepherding.ai.learning import QLearner
 from sheepherding.ai.features import TargetFeature
+from sheepherding.util import running_avg
 
 import time
 
 import nodebox.graphics as ng
+import matplotlib.pyplot as plt
 
 # define world
 width = 500
 height = 500
-speed = 1.0
+speed = 0.2
 
-# create world
-world = World(width, height, speed=speed)
+
 
 # define AI for dogs, in this case, they share the same AI with a QLearner
 def actions(state):
-    result = ['left', 'right']
+    result = ['left', 'right', 'none']
     if state.own_speed > 0:
         result.append('slower')
     if state.own_speed < 5:
@@ -30,19 +31,33 @@ exploration_prob = 0.2
 learner = QLearner(actions, discount, TargetFeature(), exploration_prob)
 dog_ai = GoTargetAI(learner)
 
+total_rewards = []
 
-world.populate_sheep(1)
-world.populate_dogs(1, dog_ai)
+nsim = 100
 
 print 'Running simulation...',
 start_time = time.time()
-world.run(3)
+for _ in xrange(nsim):
+    # create world
+    world = World(width, height, speed=speed)
+    world.populate_sheep(1)
+    world.populate_dogs(1, dog_ai)
+
+
+    world.run(20)
+
+    total_reward = sum(sum(dog.ai.rewards) for dog in world.dogs)
+    total_rewards.append(total_reward)
+
 print 'done in {:0.2f} seconds'.format(time.time() - start_time)
 
-total_rewards = sum(sum(dog.ai.rewards) for dog in world.dogs)
-
-print 'Total rewards: {}'.format(total_rewards)
+print 'Weights:'
+print world.dogs[0].ai.rl.weights
 
 print 'Showing simulation...',
 draw_world(world)
 print 'done'
+
+plt.plot(running_avg(total_rewards))
+plt.show()
+

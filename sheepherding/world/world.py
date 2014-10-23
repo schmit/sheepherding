@@ -27,7 +27,7 @@ class World:
         self.target = Location(self.width/2 + random.randint(-50, 50),
                 self.height/2 + random.randint(-50, 50))
         # radius
-        self.target_radius = 20
+        self.target_radius = 40
 
     def populate_sheep(self, n_sheep):
         border = 100
@@ -51,9 +51,10 @@ class World:
         self.sheeps.append(Sheep(self, loc))
 
     def update(self):
-        # first find moves for every dog
-        for dog in self.dogs:
-            dog.getMove()
+        # first find moves for every dog, every 10th iteration
+        if self.iteration % 10 == 0:
+            for dog in self.dogs:
+                dog.getMove()
 
         # update the world
         for sheep in self.sheeps:
@@ -61,9 +62,10 @@ class World:
         for dog in self.dogs:
             dog.update()
 
-        # evaluate moves by dogs
-        for dog in self.dogs:
-            dog.evaluate()
+        # evaluate moves by dogs just before new iteration
+        if self.iteration % 10 == 9:
+            for dog in self.dogs:
+                dog.evaluate()
 
         self.iteration += 1
 

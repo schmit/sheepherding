@@ -37,5 +37,6 @@ class GoTargetAI(AI):
         # convert to location so we can use distance function
         own_location = Location(newState.own_location[0], newState.own_location[1])
         distance_target = own_location.distance(newState.target_location)
-        #if distance_target < newState.target_radius*10:
-        return 2.0 / (1 + distance_target)
+        if distance_target < newState.target_radius:
+            return 1.0
+        return 0.0
