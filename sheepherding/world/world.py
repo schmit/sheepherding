@@ -11,7 +11,7 @@ class World:
     World implements the structure of the simulation.
     It includes the sheep and dogs, the driver that draws the world etc.
     '''
-    def __init__(self, width, height, speed=0.2):
+    def __init__(self, width, height, speed=1.0):
         self.width = width
         self.height = height
         self.speed = speed
@@ -27,9 +27,7 @@ class World:
         self.target = Location(self.width/2 + random.randint(-50, 50),
                 self.height/2 + random.randint(-50, 50))
         # radius
-        self.targetradius = 20
-
-        # REWARD
+        self.target_radius = 20
 
     def populate_sheep(self, n_sheep):
         border = 100
@@ -52,20 +50,20 @@ class World:
     def add_sheep(self, loc):
         self.sheeps.append(Sheep(self, loc))
 
-    def compute_reward(self):
-        for sheep in self.sheeps:
-            distance_to_target = sheep.loc.distance(self.target)
-            if distance_to_target <= self.targetradius/2:
-                self.reward += 1
-
     def update(self):
+        # first find moves for every dog
+        for dog in self.dogs:
+            dog.getMove()
+
+        # update the world
+        for sheep in self.sheeps:
+            sheep.update()
         for dog in self.dogs:
             dog.update()
 
-        for sheep in self.sheeps:
-            sheep.update()
-
-        self.compute_reward()
+        # evaluate moves by dogs
+        for dog in self.dogs:
+            dog.evaluate()
 
         self.iteration += 1
 

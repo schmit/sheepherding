@@ -7,20 +7,51 @@ class Location:
 
     def distance(self, other):
         ''' return distance between self and other location '''
-        dx = other.x - self.x
-        dy = other.y - self.y
+        # extract x and y coordinates
+        if type(other) == type((1, )):
+            ox = other[0]
+            oy = other[1]
+        else:
+            # assume other is also Location
+            ox = other.x
+            oy = other.y
+        dx = ox- self.x
+        dy = oy - self.y
         return (dx**2 + dy**2)**0.5
 
     def angle(self, other):
         ''' return angle between self and other location '''
-        dx = other.x - self.x
-        dy = other.y - self.y
+        # extract x and y coordinates
+        if type(other) == type((1, )):
+            ox = other[0]
+            oy = other[1]
+        else:
+            # assume other is also Location
+            ox = other.x
+            oy = other.y
+        dx = ox- self.x
+        dy = oy - self.y
         return atan2(dy, dx)
 
     def da(self, other):
         ''' return distance (d) and angle (a) in a tuple '''
-        dx = other.x - self.x
-        dy = other.y - self.y
+        # extract x and y coordinates
+        if type(other) == type((1, )):
+            ox = other[0]
+            oy = other[1]
+        else:
+            # assume other is also Location
+            ox = other.x
+            oy = other.y
+        # compute difference
+        dx = ox - self.x
+        dy = oy - self.y
+        return (dx**2 + dy**2)**0.5, atan2(dy, dx)
+
+    def dat(self, t):
+        ''' return distance (d) and angle (a) in a tuple, where t is a tuple with x and y coordinates '''
+        dx = t[0] - self.x
+        dy = t[1] - self.y
         return (dx**2 + dy**2)**0.5, atan2(dy, dx)
 
     def move(self, distance, angle):

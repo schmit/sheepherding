@@ -9,7 +9,8 @@ Note: this is work in progress.
 ### Requirements
 
  - Python 2.7
- - Nodebox
+ - Nodebox (for animation)
+ - Matplotlib and Seaborn (for plotting)
 
 ### Install
 
