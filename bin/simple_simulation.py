@@ -1,4 +1,5 @@
 from sheepherding.world.world import World
+from sheepherding.world.dog import Dog
 from sheepherding.viz.draw import draw_world
 from sheepherding.ai.ai import GoTargetAI
 from sheepherding.ai.learning import QLearner
@@ -13,7 +14,7 @@ import matplotlib.pyplot as plt
 # define world
 width = 500
 height = 500
-speed = 0.2
+speed = 0.3
 
 
 # define AI for dogs, in this case, they share the same AI with a QLearner
@@ -32,7 +33,7 @@ dog_ai = GoTargetAI(learner)
 
 total_rewards = []
 
-nsim = 100
+nsim = 2000
 
 print 'Running simulation...',
 start_time = time.time()
@@ -40,7 +41,7 @@ for _ in xrange(nsim):
     # create world
     world = World(width, height, speed=speed)
     world.populate_sheep(1)
-    world.populate_dogs(1, dog_ai)
+    world.add_dog(dog_ai)
 
     world.run(20)
 
@@ -56,7 +57,6 @@ print 'Showing simulation...',
 draw_world(world)
 print 'done'
 
-print total_rewards
-plt.plot(total_rewards)
+plt.plot(running_avg(total_rewards))
 plt.show()
 

@@ -9,7 +9,7 @@ Note: this is work in progress.
 ### Requirements
 
  - Python 2.7
- - Nodebox (for animation)
+ - [http://www.cityinabottle.org/nodebox/#installation Nodebox for OpenGL]
  - Matplotlib and Seaborn (for plotting)
 
 ### Install

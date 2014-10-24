@@ -1,6 +1,8 @@
-import collections, random
+'''
+These classes are based on starter code from CS 221 class at Stanford
+'''
 
-# From cs221.stanford
+import collections, random
 from math import sqrt
 
 # Abstract class: an RLAlgorithm performs reinforcement learning.  All it needs
@@ -24,20 +26,20 @@ class Learner:
 
 
 class QLearner(Learner):
-    def __init__(self, actions, discount, feature_extractor, exploration_prob=0.2):
-        self.actions = actions
+    def __init__(self, model, actions, discount, feature_extractor, exploration_prob=0.2):
+
         self.discount = discount
         self.feature_extractor = feature_extractor
         self.exploration_prob = exploration_prob
-        self.weights = collections.Counter()
+        # self.weights = collections.Counter()
+        self.model = model
         self.numIters = 0
+
+        self.actions = actions
 
     # Return the Q function associated with the weights and features
     def getQ(self, state, action):
-        score = 0
-        for f, v in self.feature_extractor(state, action):
-            score += self.weights[f] * v
-        return score
+        return self.model.eval(self.feature_extractor(state, action))
 
     # This algorithm will produce an action given a state.
     # Here we use the epsilon-greedy algorithm: with probability
@@ -51,7 +53,8 @@ class QLearner(Learner):
 
     # Call this function to get the step size to update the weights.
     def getStepSize(self):
-        return 1.0 / sqrt(self.numIters)
+        #return 1.0 / sqrt(self.numIters)
+        return 0.01
 
     # We will call this function with (s, a, r, s'), which you should use to update |weights|.
     # Note that if s is a terminal state, then s' will be None.  Remember to check for this.
@@ -65,6 +68,5 @@ class QLearner(Learner):
             residual = reward + self.discount * max(self.getQ(newState, newAction) for newAction in self.actions(newState)) - self.getQ(state, action)
 
         # update weights
-        phi = self.feature_extractor(state, action)
-        for featureKey, featureValue in phi:
-            self.weights[featureKey] += self.getStepSize() * residual * featureValue
+        features = self.feature_extractor(state, action)
+        self.model.update(features, residual, self.getStepSize())

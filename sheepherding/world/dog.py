@@ -1,12 +1,13 @@
 from animal import Animal
 from ..ai.state import State
+from location import Location
 
 from math import pi
 
 import nodebox.graphics as ng
 
 class Dog(Animal):
-    def __init__(self, world, loc, ai):
+    def __init__(self, world, ai, loc=Location(0, 0)):
         Animal.__init__(self, world, loc)
         self.speed = 3.0
         self.angle = 0.0
@@ -18,34 +19,42 @@ class Dog(Animal):
         self.actions = []
 
     # Actions for dog
-    def faster(self):
-        ''' increase speed by 1 up to max_speed '''
-        self.speed = min(self.max_speed, self.speed + 0.3)
+    def run(self):
+        ''' Move at speed of 5 '''
+        self.speed = 5.0
+
+    def stop(self):
+        ''' Stop '''
+        self.speed = 0.0
+
+    def walk(self):
+        ''' Move at speed of 1 '''
+        self.speed = 1.0
 
     def left(self):
         ''' turn left such that full turn takes 1 second '''
-        self.angle += 2*pi / 10.0
+        self.angle += pi / 5.0
 
     def right(self):
         ''' turn right such that full turn takes 1 second '''
-        self.angle -= 2*pi / 10.0
+        self.angle -= pi / 5.0
 
-    def slower(self):
-        ''' slow down by 1 up to stopping '''
-        self.speed = max(0, self.speed - 0.3)
 
     # Get move from AI
     def getMove(self):
         self.action = self.ai.getAction(State(self))
         self.actions.append(self.action)
-        if self.action == 'faster':
-            self.faster()
+        if self.action == 'run':
+            self.run()
+        elif self.action == 'walk':
+            self.walk()
+        elif self.action == 'stop':
+            self.stop()
         elif self.action == 'left':
             self.left()
         elif self.action == 'right':
             self.right()
-        elif self.action == 'slower':
-            self.slower()
+
 
     # Evaluate
     def evaluate(self):

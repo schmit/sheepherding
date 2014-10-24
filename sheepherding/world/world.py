@@ -23,32 +23,38 @@ class World:
         self.dogs = []
 
         # TARGET
-        # location
-        self.target = Location(self.width/2 + random.randint(-50, 50),
-                self.height/2 + random.randint(-50, 50))
-        # radius
-        self.target_radius = 40
+        self.set_target()
+
 
     def populate_sheep(self, n_sheep):
-        border = 100
+        ''' populate the world with n_sheep sheep '''
+        # stay away from border
+        border = 50
 
         for _ in xrange(n_sheep):
             loc = Location(random.randint(border, self.width-border),
                     random.randint(border, self.height-border))
             self.add_sheep(loc)
 
-    def populate_dogs(self, n_dogs, ai=None):
-        border = 100
-        for _ in xrange(n_dogs):
-            loc = Location(random.randint(border, self.width-border),
-                    random.randint(border, self.height-border))
-            self.add_dog(loc, ai)
-
-    def add_dog(self, loc, ai):
-        self.dogs.append(Dog(self, loc, ai))
+    def add_dog(self, ai):
+        ''' add a specific dog to the world at random location '''
+        # reset ai
+        ai.reset()
+        # give random location to dog: one of the corners
+        border = 50
+        x = random.choice((border, self.width-border))
+        y = random.choice((border, self.height-border))
+        loc = Location(x, y)
+        dog = Dog(self, ai, loc)
+        self.dogs.append(dog)
 
     def add_sheep(self, loc):
         self.sheeps.append(Sheep(self, loc))
+
+    def set_target(self, target_border=100, target_radius=40):
+        self.target = Location(random.randint(target_border, self.width - target_border), random.randint(target_border, self.height - target_border))
+        # radius
+        self.target_radius = target_radius
 
     def update(self):
         # first find moves for every dog, every 10th iteration
