@@ -4,6 +4,8 @@ try:
 except:
     import pickle
 
+from neural import rectifier_network
+
 class Model:
     def save(self, filen=None):
         if filen == None:
@@ -16,6 +18,7 @@ class Model:
             filen = self.__class__.__name__
         with open('{}.pkl'.format(filen), 'r') as f:
             self.weights = pickle.load(f)
+
 
 class LinearModel(Model):
     def __init__(self):
@@ -34,3 +37,13 @@ class LinearModel(Model):
     def __repr__(self):
         return '\n'.join(['{:30s} {:3.3f}'.format(k, v) for k, v in self.weights.iteritems()])
 
+
+class NeuralModel(Model):
+    def __init__(self, hidden_nodes=3):
+        self.network = rectifier_network(hidden_nodes)
+
+    def eval(self, features):
+        return self.network.predict(features)
+
+    def update(self, features, residual, stepsize):
+        self.network.update(features, residual, stepsize)

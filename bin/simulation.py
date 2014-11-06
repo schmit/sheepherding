@@ -5,9 +5,9 @@ from sheepherding.viz.draw import draw_world
 import matplotlib.pyplot as plt
 import seaborn
 
-simulator = Simulator(n_sheep=0)
+simulator = Simulator(n_sheep=100)
 simulator.init_dog_ai(1)
-rewards = simulator.run(30, save_worlds=10)
+rewards = simulator.run(1, save_worlds=1)
 
 simulator.print_weights()
 
