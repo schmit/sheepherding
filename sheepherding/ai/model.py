@@ -48,8 +48,8 @@ class StaticModel(LinearModel):
     def __init__(self):
         self.weights = Counter()
         self.weights['run:target_ahead'] = 1
-        self.weights['left:target_left'] = 1
-        self.weights['right:target_right'] = 1
+        self.weights['left:a_diff'] = 0.5
+        self.weights['right:a_diff'] = -0.5
 
     def update(self, features, residual, stepsize):
         pass
