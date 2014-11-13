@@ -19,29 +19,19 @@ class FeatureExtractor:
 
 
 class TargetFeature(FeatureExtractor):
-    '''
-    feature extractor that computes distance and angle difference to target location
-    '''
     def __call__(self, state, action):
         self.precomputation(state, action)
 
         result = []
-        # constant
-        result.append(('{}'.format(action), 1))
 
         # distance to target
-        result.append((self.key('recip_d_target'), 2.0/(self.d_target + 1.0)))
-
-        # in range of target
+        result.append(('d_target', 2.0 / (1.0 + self.d_target)))
         if self.d_target < state.target_radius:
-            result.append((self.key('in_range'), 1))
+            result.append(('in_range', 1))
 
-        # angle to target
+        # angle difference with target
         result.append((self.key('a_diff'), self.a_diff))
-
-        # is target in front, left, behind or right of dog
-        if self.is_target_ahead(): result.append((self.key('target_ahead'), 1))
-        if self.is_target_left(): result.append((self.key('target_left'), 1))
+        result.append((self.key('target_ahead'), self.is_target_ahead()))
 
         return result
 
@@ -53,7 +43,4 @@ class TargetFeature(FeatureExtractor):
         self.a_diff = angle_difference(state.own_angle, self.a_target)
 
     def is_target_ahead(self):
-        return -pi/2 < self.a_diff < pi/2
-
-    def is_target_left(self):
-        return self.a_diff > 0
+        return -pi/6 < self.a_diff < pi/6

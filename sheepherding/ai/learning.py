@@ -53,8 +53,8 @@ class QLearner(Learner):
 
     # Call this function to get the step size to update the weights.
     def getStepSize(self):
-        #return 1.0 / sqrt(self.numIters)
-        return 0.01
+        # return 1.0 / sqrt(self.numIters)
+        return 0.001
 
     # We will call this function with (s, a, r, s'), which you should use to update |weights|.
     # Note that if s is a terminal state, then s' will be None.  Remember to check for this.

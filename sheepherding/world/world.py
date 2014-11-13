@@ -25,7 +25,6 @@ class World:
         # TARGET
         self.set_target()
 
-
     def populate_sheep(self, n_sheep):
         ''' populate the world with n_sheep sheep '''
         # stay away from border
@@ -41,7 +40,7 @@ class World:
         # reset ai
         ai.reset()
         # give random location to dog: one of the corners
-        border = 50
+        border = 20
         x = random.choice((border, self.width-border))
         y = random.choice((border, self.height-border))
         loc = Location(x, y)
@@ -51,7 +50,7 @@ class World:
     def add_sheep(self, loc):
         self.sheeps.append(Sheep(self, loc))
 
-    def set_target(self, target_border=100, target_radius=40):
+    def set_target(self, target_border=50, target_radius=25):
         self.target = Location(random.randint(target_border, self.width - target_border), random.randint(target_border, self.height - target_border))
         # radius
         self.target_radius = target_radius
@@ -77,5 +76,17 @@ class World:
 
     def run(self, seconds):
         ''' run world for a number of seconds '''
-        for _ in xrange(30*seconds):
+        iteration = 0
+        done = False
+        while not done and iteration < 30 * seconds:
+            # update world
             self.update()
+
+            # check whether we are done
+            for dog in self.dogs:
+                if dog.ai.done:
+                    done = True
+
+            # boilerplate
+            iteration += 1
+

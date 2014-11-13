@@ -9,13 +9,12 @@ import nodebox.graphics as ng
 class Dog(Animal):
     def __init__(self, world, ai, loc=Location(0, 0)):
         Animal.__init__(self, world, loc)
-        self.speed = 3.0
+        self.speed = 1.0
         self.angle = 0.0
 
-        self.action = 'nothing'
+        self.action = 'walk'
         self.ai = ai
 
-        self.max_speed = 5.0
         self.actions = []
 
     # Actions for dog
@@ -33,12 +32,13 @@ class Dog(Animal):
 
     def left(self):
         ''' turn left such that full turn takes 1 second '''
-        self.angle += pi / 5.0
+        self.walk()
+        self.angle += pi / 6.0
 
     def right(self):
         ''' turn right such that full turn takes 1 second '''
-        self.angle -= pi / 5.0
-
+        self.walk()
+        self.angle -= pi / 6.0
 
     # Get move from AI
     def getMove(self):
@@ -54,7 +54,6 @@ class Dog(Animal):
             self.left()
         elif self.action == 'right':
             self.right()
-
 
     # Evaluate
     def evaluate(self):

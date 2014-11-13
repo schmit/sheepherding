@@ -6,6 +6,7 @@ class AI:
         self.learner = learner
         self.rewards = []
         self.actions = []
+        self.done = False
 
     def setLearner(self, learner):
         self.learner = learner
@@ -30,6 +31,7 @@ class AI:
         ''' resets rewards and actions '''
         self.rewards = []
         self.actions = []
+        self.done = False
 
 
 class GoTargetAI(AI):
@@ -44,5 +46,7 @@ class GoTargetAI(AI):
         own_location = Location(newState.own_location[0], newState.own_location[1])
         distance_target = own_location.distance(newState.target_location)
         if distance_target < newState.target_radius:
+            self.done = True
             return 1.0
-        return -0.1
+        return 0.0
+

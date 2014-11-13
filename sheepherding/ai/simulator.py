@@ -1,16 +1,23 @@
 import sheepherding.ai.ai as ai
 import sheepherding.ai.learning as learning
 import sheepherding.ai.features as features
-from sheepherding.ai.model import LinearModel
+from sheepherding.ai.model import LinearModel, NeuralModel, StaticModel
 
 from sheepherding.world.dog import Dog
 from sheepherding.world.world import World
 
 import time
+import datetime
 import sys
+
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 class Simulator:
     def __init__(self, n_sheep=0, model='linear', learner='qlearner',
+                 feature_extractor = features.TargetFeature(),
                  world_width=500, world_height=500, world_speed=0.3):
         self.width = world_width
         self.height = world_height
@@ -24,8 +31,8 @@ class Simulator:
         self.model = model
         self.learner = learner
         self.learner_actions = self.get_actions()
-        self.learner_discount = 0.90
-        self.learner_feature_extractor = features.TargetFeature()
+        self.learner_discount = 0.95
+        self.learner_feature_extractor = feature_extractor
         self.learner_exploration_prob = 0.2
 
         # to save simulations
@@ -47,6 +54,10 @@ class Simulator:
     def get_learner(self):
         if self.model == 'linear':
             model = LinearModel()
+        elif self.model == 'neural':
+            model = NeuralModel(7)
+        elif self.model == 'baseline':
+            model = StaticModel()
         else:
             raise NotImplementedError('model: {} not implemented'.format(self.model))
 
@@ -62,7 +73,7 @@ class Simulator:
             ai = self.get_ai(learner)
             self.dog_ais.append(ai)
 
-    def run(self, nsim, seconds=30, save_worlds=100):
+    def run(self, nsim, seconds=20, save_worlds=100):
         rewards = []
 
         print 'Starting simulations:',
@@ -105,8 +116,13 @@ class Simulator:
         helper function that returns function for actions of dog
         '''
         def dog_actions(state):
-            result = ['run', 'walk', 'stop']
-            if state.own_speed != 0.0:
-                result += ['left', 'right']
-            return result
+            return ['walk', 'left', 'right', 'run']
         return dog_actions
+
+    # def save_worlds(self):
+    #     now = datetime.datetime.now()
+    #     filename = 'sims_{}{}{}{}.pkl'.format(now.month, now.day, now.hour, now.minute)
+    #     print 'Saving worlds to {}...'.format(filename),
+    #     with open(filename, 'w') as f:
+    #         pickle.dump(self.worlds[-1], f)
+    #     print 'done'

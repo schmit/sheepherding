@@ -15,7 +15,7 @@ class Draw:
             # draw target
             clr = ng.Color(1.0, 1.0, 1.0, 0.1)
             ng.ellipse(self.world.target.x, self.world.target.y,
-                    self.world.target_radius, self.world.target_radius,
+                    self.world.target_radius*2, self.world.target_radius*2,
                     draw=True, fill=clr)
 
             # draw sheep

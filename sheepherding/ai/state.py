@@ -14,6 +14,7 @@ class State:
         self.own_location = (dog.loc.x, dog.loc.y)
         self.own_speed = dog.speed
         self.own_angle = dog.angle
+        self.time = dog.world.iteration / 30.0
 
         self.sheep_locations = [(sheep.loc.x, sheep.loc.y) for sheep in dog.world.sheeps]
         self.dogs_locations = [(other_dog.loc.x, other_dog.loc.y) for other_dog in dog.world.dogs if dog is not other_dog]
