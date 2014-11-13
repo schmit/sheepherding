@@ -9,7 +9,7 @@ import seaborn
 
 import sys
 
-simulator = Simulator(n_sheep=1, model='neural', feature_extractor=features.TargetFeature(),
+simulator = Simulator(n_sheep=1, model='linear', feature_extractor=features.TargetFeature(),
     world_width=200, world_height=200)
 simulator.init_dog_ai(1)
 

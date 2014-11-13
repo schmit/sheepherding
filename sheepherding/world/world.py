@@ -14,6 +14,9 @@ class World:
     def __init__(self, width, height, speed=1.0):
         self.width = width
         self.height = height
+        # don't initialize in border
+        self.border = 20
+
         self.speed = speed
         self.iteration = 0
         self.reward = 0
@@ -27,24 +30,15 @@ class World:
 
     def populate_sheep(self, n_sheep):
         ''' populate the world with n_sheep sheep '''
-        # stay away from border
-        border = 50
-
         for _ in xrange(n_sheep):
-            loc = Location(random.randint(border, self.width-border),
-                    random.randint(border, self.height-border))
-            self.add_sheep(loc)
+            self.add_sheep(self.random_location())
 
     def add_dog(self, ai):
         ''' add a specific dog to the world at random location '''
         # reset ai
         ai.reset()
         # give random location to dog: one of the corners
-        border = 20
-        x = random.choice((border, self.width-border))
-        y = random.choice((border, self.height-border))
-        loc = Location(x, y)
-        dog = Dog(self, ai, loc)
+        dog = Dog(self, ai, self.random_location())
         self.dogs.append(dog)
 
     def add_sheep(self, loc):
@@ -90,3 +84,6 @@ class World:
             # boilerplate
             iteration += 1
 
+    def random_location(self):
+        x, y = random.choice((self.border, self.width-self.border)), random.choice((self.border, self.width-self.border))
+        return Location(x, y)
