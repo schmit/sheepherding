@@ -7,8 +7,8 @@ import nodebox.graphics as ng
 
 
 class Sheep(Animal):
-    def __init__(self, world, loc):
-        Animal.__init__(self, world, loc)
+    def __init__(self, world):
+        Animal.__init__(self, world)
         self.force_angle = (random.random()*2-1) * pi
 
     def compute_force(self):

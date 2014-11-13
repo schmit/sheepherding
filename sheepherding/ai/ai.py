@@ -1,6 +1,7 @@
 from ..world.location import Location
 from learning import QLearner
 
+
 class AI:
     def __init__(self, learner):
         self.learner = learner
@@ -29,9 +30,11 @@ class AI:
 
     def reset(self):
         ''' resets rewards and actions '''
+        total_reward = sum(self.rewards)
         self.rewards = []
         self.actions = []
         self.done = False
+        return total_reward
 
 
 class GoTargetAI(AI):

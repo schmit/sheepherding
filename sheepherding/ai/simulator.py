@@ -10,10 +10,6 @@ import time
 import datetime
 import sys
 
-try:
-    import cPickle as pickle
-except:
-    import pickle
 
 class Simulator:
     def __init__(self, n_sheep=0, model='linear', learner='qlearner',
@@ -35,8 +31,7 @@ class Simulator:
         self.learner_feature_extractor = feature_extractor
         self.learner_exploration_prob = 0.2
 
-        # to save simulations
-        self.worlds = []
+        self.rewards = [0]
 
     def set_ai(self, obj):
         self.ai_obj = obj
@@ -73,39 +68,32 @@ class Simulator:
             ai = self.get_ai(learner)
             self.dog_ais.append(ai)
 
-    def run(self, nsim, seconds=20, save_worlds=100):
-        rewards = []
-
+    def run(self, nsim, seconds=10):
         print 'Starting simulations:',
         start_time = time.time()
+        world = World(self.width, self.height, speed=self.speed)
+        world.populate_sheep(self.n_sheep)
+
+        # add dog(s) to world
+        for dog_ai in self.dog_ais:
+            world.add_dog(dog_ai)
+
         for sim in xrange(nsim):
             reward = 0
-            world = World(self.width, self.height, speed=self.speed)
-            world.populate_sheep(self.n_sheep)
-
-            # add dog(s) to world
-            for dog_ai in self.dog_ais:
-                world.add_dog(dog_ai)
-
             world.run(seconds)
 
             # compute reward
             for dog in world.dogs:
-                reward += sum(dog.ai.rewards)
-            rewards.append(reward)
+                reward += dog.reward
 
-            # save certain worlds for playback
-            if sim % save_worlds == 0:
-                self.worlds.append(world)
+            self.rewards.append(reward)
 
-            if sim % 100 == 0:
-                print '.',
-                sys.stdout.flush()
+            if sim % 100 == 0: print '.',
 
         self.dog_ais[0].learner.model.save()
 
         print 'done in {} seconds'.format(time.time() - start_time)
-        return rewards
+        return self.rewards, world
 
     def print_weights(self):
         for dogai in self.dog_ais:
@@ -119,10 +107,3 @@ class Simulator:
             return ['walk', 'left', 'right', 'run']
         return dog_actions
 
-    # def save_worlds(self):
-    #     now = datetime.datetime.now()
-    #     filename = 'sims_{}{}{}{}.pkl'.format(now.month, now.day, now.hour, now.minute)
-    #     print 'Saving worlds to {}...'.format(filename),
-    #     with open(filename, 'w') as f:
-    #         pickle.dump(self.worlds[-1], f)
-    #     print 'done'

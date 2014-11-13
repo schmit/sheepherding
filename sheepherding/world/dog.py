@@ -3,19 +3,35 @@ from ..ai.state import State
 from location import Location
 
 from math import pi
+import random
 
 import nodebox.graphics as ng
 
 class Dog(Animal):
-    def __init__(self, world, ai, loc=Location(0, 0)):
-        Animal.__init__(self, world, loc)
-        self.speed = 1.0
+    def __init__(self, world, ai):
+        Animal.__init__(self, world)
+        self.speed = 2.0
         self.angle = 0.0
 
         self.action = 'walk'
         self.ai = ai
 
         self.actions = []
+        self.reward = 0
+
+    def reset(self):
+        # hack to get around initialization
+        try:
+            self.reward += self.ai.reset()
+        except AttributeError:
+            # self.reward does not exist yet when initializing
+            pass
+
+        self.loc = self.random_location()
+
+    def random_location(self):
+        x, y = random.choice((self.world.border, self.world.width-self.world.border)), random.choice((self.world.border, self.world.width-self.world.border))
+        return Location(x, y)
 
     # Actions for dog
     def run(self):
@@ -28,7 +44,7 @@ class Dog(Animal):
 
     def walk(self):
         ''' Move at speed of 1 '''
-        self.speed = 1.0
+        self.speed = 2.0
 
     def left(self):
         ''' turn left such that full turn takes 1 second '''
@@ -63,3 +79,5 @@ class Dog(Animal):
     def update(self):
         self.loc = self.loc.move(self.world.speed * self.speed, self.angle)
         self.save_history()
+
+
