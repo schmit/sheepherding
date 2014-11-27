@@ -19,13 +19,13 @@ class World:
 
         self.speed = speed
         self.iteration = 0
-        self.reward = 0
+        self.rewards = []
 
         # dogs and sheep are stored in lists
         self.sheeps = []
         self.dogs = []
 
-        # TARGET
+        # target
         self.set_target()
 
     def populate_sheep(self, n_sheep):
@@ -33,19 +33,22 @@ class World:
         for _ in xrange(n_sheep):
             self.add_sheep()
 
-    def add_dog(self, ai):
+    def populate_dogs(self, n_dogs):
+        for _ in xrange(n_dogs):
+            self.add_dog()
+
+    def add_dog(self):
         ''' add a specific dog to the world at random location '''
-        # reset ai
-        ai.reset()
-        # give random location to dog: one of the corners
-        dog = Dog(self, ai)
-        self.dogs.append(dog)
+        self.dogs.append(Dog(self))
 
     def add_sheep(self):
         self.sheeps.append(Sheep(self))
 
     def set_target(self, target_border=50, target_radius=25):
-        self.target = Location(random.randint(target_border, self.width - target_border), random.randint(target_border, self.height - target_border))
+        try:
+            self.target = Location(random.randint(target_border, self.width - target_border), random.randint(target_border, self.height - target_border))
+        except:
+            self.target = Location(self.width/2, self.height/2)
         # radius
         self.target_radius = target_radius
 
@@ -79,15 +82,13 @@ class World:
     def run(self, seconds):
         ''' run world for a number of seconds '''
         iteration = 0
+        reward = 0
         while iteration < 30 * seconds:
             # update world
             self.update()
 
             # check whether we are done
-            for dog in self.dogs:
-                if dog.ai.done:
-                    self.reset()
-
+            if self.ai.done: break
             iteration += 1
 
         self.reset()

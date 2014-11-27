@@ -17,8 +17,8 @@ def running_avg(seq):
             yield total / count
     return [x for x in gen(seq)]
 
-def angle_difference(current, aim):
-    ''' compute the difference in angle between current angle and aim angle '''
-    raw_diff = aim - current
+def angle_difference(a, b):
+    ''' compute the difference in angle between a and b '''
+    raw_diff = a - b
     diff = (raw_diff + pi) % (2*pi) - pi
     return diff

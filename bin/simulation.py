@@ -9,16 +9,18 @@ import seaborn
 
 import sys
 
-simulator = Simulator(n_sheep=1, model='baseline', feature_extractor=features.TargetFeature(),
+simulator = Simulator(n_dogs=1, n_sheep=1, objective='herdsheep', model='linear', feature_extractor=features.SheepFeature(),
     world_width=200, world_height=200)
-simulator.init_dog_ai(1)
 
 # start with exploring a lot
-rewards, world = simulator.run(int(sys.argv[1]))
+simulator.run(int(sys.argv[1]))
 
-draw_world(world)
+draw_world(simulator.world)
 
 simulator.print_weights()
 
-plt.plot([x/(i+1) for i, x in enumerate(rewards)])
-plt.show()
+print sum(simulator.rewards)
+
+plt.plot(running_avg(simulator.rewards))
+plt.savefig('rewards.pdf')
+

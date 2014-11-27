@@ -32,8 +32,10 @@ class Draw:
                 clr = ng.Color(0.1, 0.1, 0.1, 0.9)
                 ng.ellipse(x, y, r, r, draw=True, fill=clr)
 
-            label = ng.Text('time: {}'.format(self.iteration / 30))
-            ng.text(label, 10, 10)
+            # label = ng.Text('time: {}'.format(self.iteration / 30))
+            # ng.text(label, 10, 10)
+            # label = ng.Text('reward: {}'.format(self.world.rewards[self.iteration]))
+            # ng.text(label, 10, 10)
 
             self.iteration = min(self.iteration + 1, self.world.iteration - 1)
 

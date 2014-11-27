@@ -41,18 +41,31 @@ class LinearModel(Model):
             self.weights[feature] += stepsize * (residual * value)
 
     def __repr__(self):
-        return '\n'.join(['{:30s} {:3.3f}'.format(k, v) for k, v in self.weights.iteritems()])
-
+        return '\n'.join(['{:30s} {:3.3f}'.format(k, v) for k, v in sorted(self.weights.items())])
 
 class StaticModel(LinearModel):
     def __init__(self):
         self.weights = Counter()
+        self.sheep_weights()
+
+    def update(self, features, residual, stepsize):
+        pass
+
+    def target_weights(self):
         self.weights['run:target_ahead'] = 1
         self.weights['left:a_diff'] = 0.5
         self.weights['right:a_diff'] = -0.5
 
-    def update(self, features, residual, stepsize):
-        pass
+    def sheep_weights(self):
+        self.weights['left:target_dog_sheep_a'] = -2.0
+        self.weights['right:target_dog_sheep_a'] = 2.0
+        self.weights['towards:target_dog_sheep_a'] = 0
+        self.weights['away:target_dog_sheep_a'] = 0
+
+        self.weights['left:constant'] = 0
+        self.weights['right:constant'] = 0
+        self.weights['towards:constant'] = 0.5
+        self.weights['away:constant'] = -1
 
 
 class NeuralModel(Model):

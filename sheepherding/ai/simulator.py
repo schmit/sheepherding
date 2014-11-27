@@ -12,18 +12,18 @@ import sys
 
 
 class Simulator:
-    def __init__(self, n_sheep=0, model='linear', learner='qlearner',
-                 feature_extractor = features.TargetFeature(),
-                 world_width=500, world_height=500, world_speed=0.3):
+    def __init__(self, n_dogs=1, n_sheep=1,
+                objective='gotarget', model='linear', learner='qlearner',
+                feature_extractor = features.TargetFeature(),
+                world_width=500, world_height=500, world_speed=0.3):
         self.width = world_width
         self.height = world_height
         self.speed = world_speed
         self.n_sheep = n_sheep
-        self.dog_ais = []
+        self.n_dogs = n_dogs
 
         # ai and learner defaults
-        self.ai_obj = 'gotarget'
-
+        self.ai_obj = objective
         self.model = model
         self.learner = learner
         self.learner_actions = self.get_actions()
@@ -33,12 +33,19 @@ class Simulator:
 
         self.rewards = [0]
 
-    def set_ai(self, obj):
-        self.ai_obj = obj
+        self.setup_world()
+
+    def setup_world(self):
+        self.world = World(self.width, self.height, speed=self.speed)
+        self.world.populate_sheep(self.n_sheep)
+        self.world.populate_dogs(self.n_dogs)
+        self.world.ai = self.get_ai(self.get_learner())
 
     def get_ai(self, learner):
         if self.ai_obj == 'gotarget':
             return ai.GoTargetAI(learner)
+        elif self.ai_obj == 'herdsheep':
+            return ai.HerdSheepAI(learner)
         else: raise NotImplementedError('Unknown AI')
 
     def set_learner(self):
@@ -62,48 +69,31 @@ class Simulator:
         else:
             raise NotImplementedError('learner: {} not implemented'.format(self.learner))
 
-    def init_dog_ai(self, n_dogs, ai='gotarget', learner='qlearner'):
-        for _ in xrange(n_dogs):
-            learner = self.get_learner()
-            ai = self.get_ai(learner)
-            self.dog_ais.append(ai)
-
     def run(self, nsim, seconds=10):
         print 'Starting simulations:',
         start_time = time.time()
-        world = World(self.width, self.height, speed=self.speed)
-        world.populate_sheep(self.n_sheep)
-
-        # add dog(s) to world
-        for dog_ai in self.dog_ais:
-            world.add_dog(dog_ai)
 
         for sim in xrange(nsim):
-            reward = 0
-            world.run(seconds)
+            self.world.run(seconds)
 
-            # compute reward
-            for dog in world.dogs:
-                reward += dog.reward
-
+            # reset AI for next run
+            reward = self.world.ai.reset()
             self.rewards.append(reward)
 
             if sim % 100 == 0: print '.',
 
-        self.dog_ais[0].learner.model.save()
+        self.world.ai.learner.model.save()
 
         print 'done in {} seconds'.format(time.time() - start_time)
-        return self.rewards, world
 
     def print_weights(self):
-        for dogai in self.dog_ais:
-            print dogai.learner.model
+        print self.world.ai.learner.model
 
     def get_actions(self):
         '''
         helper function that returns function for actions of dog
         '''
         def dog_actions(state):
-            return ['walk', 'left', 'right', 'run']
+            return ['towards', 'away', 'left', 'right']
         return dog_actions
 

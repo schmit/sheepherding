@@ -11,7 +11,8 @@ class Animal:
         self.reset()
 
     def save_history(self):
-        self.history.append((self.loc.x, self.loc.y))
+        if len(self.history) < 1e6:
+            self.history.append((self.loc.x, self.loc.y))
 
     def update(self):
         ''' wander mindlessly '''

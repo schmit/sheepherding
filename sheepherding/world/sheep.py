@@ -36,12 +36,13 @@ class Sheep(Animal):
             return force_func(distance, 50.0, 25.0)
 
         fx, fy = 0, 0
-        for sheep in self.world.sheeps:
-            if sheep is not self:
-                distance, angle = self.loc.da(sheep.loc)
-                total_force = sheep_force(distance)
-                fx += total_force * cos(angle)
-                fy += total_force * sin(angle)
+
+        # for sheep in self.world.sheeps:
+        #     if sheep is not self:
+        #         distance, angle = self.loc.da(sheep.loc)
+        #         total_force = sheep_force(distance)
+        #         fx += total_force * cos(angle)
+        #         fy += total_force * sin(angle)
 
         for dog in self.world.dogs:
             distance, angle = self.loc.da(dog.loc)
