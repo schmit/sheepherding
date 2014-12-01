@@ -22,3 +22,7 @@ def angle_difference(a, b):
     raw_diff = a - b
     diff = (raw_diff + pi) % (2*pi) - pi
     return diff
+
+def bin_value(val, nbins, minval, maxval):
+    b = int((val - minval) / (maxval - minval) * nbins)
+    return max(0, min(nbins, b))

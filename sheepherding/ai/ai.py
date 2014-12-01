@@ -9,6 +9,9 @@ class AI:
         self.actions = []
         self.done = False
 
+        # keep track of which sheep are done
+        self.sheep_done = set([])
+
     def setLearner(self, learner):
         self.learner = learner
 
@@ -29,6 +32,7 @@ class AI:
         self.rewards = []
         self.actions = []
         self.done = False
+        self.sheep_done = set([])
         return total_reward
 
 
@@ -59,13 +63,15 @@ class HerdSheepAI(AI):
         '''
         # convert to location so we can use distance function
         reward = 0
-        for sheep in state.sheep_locations:
+        for k, sheep in enumerate(state.sheep_locations):
             distance_target = Location(sheep[0], sheep[1]).distance(new_state.target_location)
-            if distance_target < new_state.target_radius:
+            # reward += 2.0 / (1.0 + distance_target)
+            if distance_target < new_state.target_radius and k not in self.sheep_done:
                 reward += 1
+                self.sheep_done.add(k)
 
         # done if all sheep in target location
-        if reward == len(state.sheep_locations):
+        if len(state.sheep_locations) == len(self.sheep_done):
             self.done = True
 
         return reward

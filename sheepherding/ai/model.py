@@ -22,13 +22,15 @@ class Model:
 
 class LinearModel(Model):
     ''' Use a linear model for Q-learning '''
-    def __init__(self):
+    def __init__(self, regularization=0.00001):
         try:
             self.load()
             print 'Loading trained model'
         except IOError:
             print 'Cant load trained model, using new model'
             self.weights = Counter()
+
+        self.reg = regularization
 
     def eval(self, features):
         score = 0
@@ -38,7 +40,7 @@ class LinearModel(Model):
 
     def update(self, features, residual, stepsize):
         for feature, value in features:
-            self.weights[feature] += stepsize * (residual * value)
+            self.weights[feature] += stepsize * (residual * value - self.reg * self.weights[feature])
 
     def __repr__(self):
         return '\n'.join(['{:30s} {:3.3f}'.format(k, v) for k, v in sorted(self.weights.items())])

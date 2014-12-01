@@ -10,7 +10,7 @@ import nodebox.graphics as ng
 class Dog(Animal):
     def __init__(self, world):
         Animal.__init__(self, world)
-        self.speed = 3.0
+        self.speed = 4.0
         self.angle = 0.0
 
     def reset(self):
@@ -22,19 +22,22 @@ class Dog(Animal):
 
     # Get move from AI
     def getMove(self):
-        state = State(self)
+        state = self.getState()
         self.action = self.world.ai.getAction(state)
         if self.action == 'towards':
             self.angle = state.min_sheep_a
         elif self.action == 'away':
             self.angle = state.min_sheep_a + pi
         elif self.action == 'left':
-            self.angle = state.min_sheep_a + 0.2 * pi
+            self.angle = state.min_sheep_a + 0.4 * pi
         elif self.action == 'right':
-            self.angle = state.min_sheep_a - 0.2 * pi
+            self.angle = state.min_sheep_a - 0.4 * pi
 
         # save for evaluate()
         self.old_state = state
+
+    def getState(self):
+        return State(self)
 
     # Evaluate
     def evaluate(self):

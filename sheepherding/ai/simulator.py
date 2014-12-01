@@ -27,9 +27,9 @@ class Simulator:
         self.model = model
         self.learner = learner
         self.learner_actions = self.get_actions()
-        self.learner_discount = 0.95
+        self.learner_discount = 0.90
         self.learner_feature_extractor = feature_extractor
-        self.learner_exploration_prob = 0.2
+        self.learner_exploration_prob = 0.3
 
         self.rewards = [0]
 
@@ -69,7 +69,7 @@ class Simulator:
         else:
             raise NotImplementedError('learner: {} not implemented'.format(self.learner))
 
-    def run(self, nsim, seconds=10):
+    def run(self, nsim, seconds=15):
         print 'Starting simulations:',
         start_time = time.time()
 
