@@ -10,7 +10,7 @@ class Animal:
         # assign random location
         self.reset()
 
-    def save_history(self):
+    def saveHistory(self):
         if len(self.history) < 1e6:
             self.history.append((self.loc.x, self.loc.y))
 
@@ -21,4 +21,4 @@ class Animal:
 
     # reset to random location
     def reset(self):
-        self.loc = self.world.random_location()
+        self.loc = self.world.randomLocation()

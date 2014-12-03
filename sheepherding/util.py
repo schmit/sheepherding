@@ -6,7 +6,7 @@ def sign(x):
     elif x < 0: return -1
     return 0
 
-def running_avg(seq):
+def runningAvg(seq):
     ''' compute running average of sequence '''
     def gen(seq):
         total = 0.0
@@ -17,12 +17,12 @@ def running_avg(seq):
             yield total / count
     return [x for x in gen(seq)]
 
-def angle_difference(a, b):
+def angleDifference(a, b):
     ''' compute the difference in angle between a and b '''
     raw_diff = a - b
     diff = (raw_diff + pi) % (2*pi) - pi
     return diff
 
-def bin_value(val, nbins, minval, maxval):
+def binValue(val, nbins, minval, maxval):
     b = int((val - minval) / (maxval - minval) * nbins)
     return max(0, min(nbins, b))

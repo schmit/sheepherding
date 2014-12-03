@@ -53,7 +53,6 @@ class QLearner(Learner):
 
     # Call this function to get the step size to update the weights.
     def getStepSize(self):
-        # return 1.0 / sqrt(self.numIters)
         return 0.01
 
     # We will call this function with (s, a, r, s'), which you should use to update |weights|.
@@ -70,3 +69,4 @@ class QLearner(Learner):
         # update weights
         features = self.feature_extractor(state, action)
         self.model.update(features, residual, self.getStepSize())
+

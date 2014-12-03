@@ -41,7 +41,7 @@ class Draw:
 
         return d
 
-def draw_world(world):
+def drawWorld(world):
     ng.canvas.fps = 30
     ng.canvas.size = world.width, world.height
     draw = Draw(world)

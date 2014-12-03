@@ -11,9 +11,9 @@ class Sheep(Animal):
         Animal.__init__(self, world)
         self.force_angle = (random.random()*2-1) * pi
 
-    def compute_force(self):
+    def computeForce(self):
         ''' compute the force on the sheep '''
-        def force_func(x, a=1.0, b=1.0):
+        def forceFunc(x, a=1.0, b=1.0):
             '''
             force function:
             x: input
@@ -23,30 +23,30 @@ class Sheep(Animal):
             f = b * (1.0 - (x / a)**0.5)
             return max(0, f)
 
-        def sheep_force(distance):
+        def sheepForce(distance):
             # the further away, the less the attractive force
             # note attraction is negative
-            attraction = force_func(distance, 30.0, 1.0)
-            repulsion = force_func(distance, 5.0, 5.0)
+            attraction = forceFunc(distance, 40.0, 1.0)
+            repulsion = forceFunc(distance, 5.0, 5.0)
             total = repulsion - attraction
             return repulsion - attraction
 
-        def dog_force(distance):
+        def dogForce(distance):
             # the closer the dog, the stronger the force
-            return force_func(distance, 50.0, 25.0)
+            return forceFunc(distance, 50.0, 25.0)
 
         fx, fy = 0, 0
 
-        # for sheep in self.world.sheeps:
-        #     if sheep is not self:
-        #         distance, angle = self.loc.da(sheep.loc)
-        #         total_force = sheep_force(distance)
-        #         fx += total_force * cos(angle)
-        #         fy += total_force * sin(angle)
+        for sheep in self.world.sheeps:
+            if sheep is not self:
+                distance, angle = self.loc.da(sheep.loc)
+                total_force = sheepForce(distance)
+                fx += total_force * cos(angle)
+                fy += total_force * sin(angle)
 
         for dog in self.world.dogs:
             distance, angle = self.loc.da(dog.loc)
-            total_force = dog_force(distance)
+            total_force = dogForce(distance)
             fx += total_force * cos(angle)
             fy += total_force * sin(angle)
 
@@ -54,7 +54,7 @@ class Sheep(Animal):
         # new angle is influenced by previous: this provides more fluent movement
         self.force_angle = (atan2(fy, fx) - pi)
 
-    def compute_speed(self):
+    def computeSpeed(self):
         hi_speed_th = 10.0
         if self.force_magnitude > hi_speed_th:
             self.speed = 4.0
@@ -63,9 +63,9 @@ class Sheep(Animal):
 
     def update(self):
         # compute all forces
-        self.compute_force()
-        self.compute_speed()
+        self.computeForce()
+        self.computeSpeed()
 
         # move according to forces
         self.loc = self.loc.move(self.world.speed * self.speed, self.force_angle)
-        self.save_history()
+        self.saveHistory()

@@ -26,25 +26,25 @@ class World:
         self.dogs = []
 
         # target
-        self.set_target()
+        self.setTarget()
 
-    def populate_sheep(self, n_sheep):
+    def populateSheep(self, n_sheep):
         ''' populate the world with n_sheep sheep '''
         for _ in xrange(n_sheep):
-            self.add_sheep()
+            self.addSheep()
 
-    def populate_dogs(self, n_dogs):
+    def populateDogs(self, n_dogs):
         for _ in xrange(n_dogs):
-            self.add_dog()
+            self.addDog()
 
-    def add_dog(self):
+    def addDog(self):
         ''' add a specific dog to the world at random location '''
         self.dogs.append(Dog(self))
 
-    def add_sheep(self):
+    def addSheep(self):
         self.sheeps.append(Sheep(self))
 
-    def set_target(self, target_border=50, target_radius=25):
+    def setTarget(self, target_border=50, target_radius=25):
         try:
             self.target = Location(random.randint(target_border, self.width - target_border), random.randint(target_border, self.height - target_border))
         except:
@@ -93,6 +93,6 @@ class World:
 
         self.reset()
 
-    def random_location(self):
+    def randomLocation(self):
         x, y = random.randint(self.border, self.width-self.border), random.randint(self.border, self.width-self.border)
         return Location(x, y)

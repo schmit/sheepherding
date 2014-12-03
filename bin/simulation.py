@@ -1,6 +1,6 @@
 from sheepherding.ai.simulator import Simulator
-from sheepherding.util import running_avg
-from sheepherding.viz.draw import draw_world
+from sheepherding.util import runningAvg
+from sheepherding.viz.draw import drawWorld
 
 import sheepherding.ai.features as features
 
@@ -10,17 +10,17 @@ import seaborn
 import sys
 
 simulator = Simulator(n_dogs=1, n_sheep=1, objective='herdsheep', model='linear', feature_extractor=features.SheepFeature(),
-    world_width=300, world_height=300)
+    world_width=400, world_height=400)
 
 # start with exploring a lot
 simulator.run(int(sys.argv[1]))
 
-draw_world(simulator.world)
+drawWorld(simulator.world)
 
-simulator.print_weights()
+simulator.printWeights()
 
 print sum(simulator.rewards)
 
-plt.plot(running_avg(simulator.rewards))
+plt.plot(runningAvg(simulator.rewards))
 plt.savefig('rewards.pdf')
 

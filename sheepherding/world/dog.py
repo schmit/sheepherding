@@ -14,9 +14,9 @@ class Dog(Animal):
         self.angle = 0.0
 
     def reset(self):
-        self.loc = self.random_location()
+        self.loc = self.randomLocation()
 
-    def random_location(self):
+    def randomLocation(self):
         x, y = random.choice((self.world.border, self.world.width-self.world.border)), random.choice((self.world.border, self.world.height-self.world.border))
         return Location(x, y)
 
@@ -24,14 +24,15 @@ class Dog(Animal):
     def getMove(self):
         state = self.getState()
         self.action = self.world.ai.getAction(state)
+        # target centric
         if self.action == 'towards':
-            self.angle = state.min_sheep_a
+            self.angle = state.target_a
         elif self.action == 'away':
-            self.angle = state.min_sheep_a + pi
+            self.angle = state.target_a + pi
         elif self.action == 'left':
-            self.angle = state.min_sheep_a + 0.4 * pi
+            self.angle = state.target_a + 0.35 * pi
         elif self.action == 'right':
-            self.angle = state.min_sheep_a - 0.4 * pi
+            self.angle = state.target_a - 0.35 * pi
 
         # save for evaluate()
         self.old_state = state
@@ -47,6 +48,6 @@ class Dog(Animal):
     # An update is moving at certain speed in certain direction
     def update(self):
         self.loc = self.loc.move(self.world.speed * self.speed, self.angle)
-        self.save_history()
+        self.saveHistory()
 
 

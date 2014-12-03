@@ -45,8 +45,8 @@ class State:
 
         # closest sheep
         closest_sheep = sorted_sheep[0][1]
-        self.min_sheep_d, self.min_sheep_a = dog.loc.da(dog.world.sheeps[closest_sheep].loc)
-        self.min_sheep_t_d, self.min_sheep_t_a = dog.world.sheeps[closest_sheep].loc.da(dog.world.target)
+        self.sheep_d, self.sheep_a = dog.loc.da(dog.world.sheeps[closest_sheep].loc)
+        self.sheep_t_d, self.sheep_t_a = dog.world.sheeps[closest_sheep].loc.da(dog.world.target)
 
     def details(self):
         ''' print details of state useful for interpretation '''
@@ -66,14 +66,14 @@ class State:
         print '-'*10
         print '- sheep'
         print '-'*10
-        print 'distance: {}'.format(self.min_sheep_d)
-        print 'angle:    {}pi'.format(self.min_sheep_a/pi)
+        print 'distance: {}'.format(self.sheep_d)
+        print 'angle:    {}pi'.format(self.sheep_a/pi)
 
         print '-'*10
         print '- sheep - target'
         print '-'*10
-        print 'distance: {}'.format(self.min_sheep_t_d)
-        print 'angle:    {}pi'.format(self.min_sheep_t_a/pi)
+        print 'distance: {}'.format(self.sheep_t_d)
+        print 'angle:    {}pi'.format(self.sheep_t_a/pi)
 
     def __iter__(self):
         for attr, value in self.__dict__.iteritems():

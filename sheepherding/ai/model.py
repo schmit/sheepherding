@@ -48,26 +48,26 @@ class LinearModel(Model):
 class StaticModel(LinearModel):
     def __init__(self):
         self.weights = Counter()
-        self.sheep_weights()
+        self.sheepWeights()
 
     def update(self, features, residual, stepsize):
         pass
 
-    def target_weights(self):
+    def targetWeights(self):
         self.weights['run:target_ahead'] = 1
         self.weights['left:a_diff'] = 0.5
         self.weights['right:a_diff'] = -0.5
 
-    def sheep_weights(self):
-        self.weights['left:target_dog_sheep_a'] = -2.0
-        self.weights['right:target_dog_sheep_a'] = 2.0
-        self.weights['towards:target_dog_sheep_a'] = 0
-        self.weights['away:target_dog_sheep_a'] = 0
-
-        self.weights['left:constant'] = 0
-        self.weights['right:constant'] = 0
-        self.weights['towards:constant'] = 0.5
-        self.weights['away:constant'] = -1
+    def sheepWeights(self):
+        self.weights['angle=0:left'] = 1
+        self.weights['angle=1:left'] = 1
+        self.weights['angle=2:left'] = 1
+        self.weights['angle=3:left'] = 1
+        self.weights['angle=4:towards'] = 1
+        self.weights['angle=5:right'] = 1
+        self.weights['angle=6:right'] = 1
+        self.weights['angle=7:right'] = 1
+        self.weights['angle=8:right'] = 1
 
 
 class NeuralModel(Model):
