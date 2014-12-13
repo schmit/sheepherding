@@ -22,7 +22,7 @@ class Simulator:
                 feature_extractor = features.TargetFeature(),
                 world_width=500, world_height=500, world_speed=0.3,
                 learner_discount = 0.95,
-                learner_exploration_prob_max=0.1, learner_exploration_prob_min=0.03):
+                learner_exploration_prob_max=0.1, learner_exploration_prob_min=0.05):
         self.width = world_width
         self.height = world_height
         self.speed = world_speed
@@ -91,7 +91,7 @@ class Simulator:
             reward = self.world.ai.reset()
             self.rewards.append(reward)
 
-            if (sim+1) % (nsim/17) == 0:
+            if (sim+1) % max((nsim/17), 2) == 0:
                 self.printProgress(sim+1, nsim, start_time)
                 self.updateExplorationProb(sim+1, nsim)
 
@@ -120,7 +120,7 @@ class Simulator:
         return dog_actions
 
     def saveRewards(self):
-        with open('rewards_{}.pkl'.format(self.model), 'w') as f:
+        with open('rewards_{}_{}.pkl'.format(self.model, self.n_sheep), 'w') as f:
             pickle.dump(self.rewards, f)
 
     def updateExplorationProb(self, sim, nsim):

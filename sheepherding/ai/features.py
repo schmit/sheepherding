@@ -85,7 +85,7 @@ class SheepFeature(FeatureExtractor):
         result += self.allSheepFeature(state, 3, 3)
         result += self.allDogsFeature(state, 3, 3)
         result += self.allSheepFeature(state)
-        result += self.allDogsFeature(state)
+        # result += self.allSheepDTargetFeature(state)
 
         return result
 
@@ -97,7 +97,7 @@ class SheepFeature(FeatureExtractor):
 
         numbins_angle = 9 # odd is better
         numbins_dist = 10
-        nbins_max_dist = 500
+        nbins_max_dist = 300
 
         d_sheep = state.sheep_d
         d_target = state.target_d
@@ -111,40 +111,60 @@ class SheepFeature(FeatureExtractor):
         # result.append((self.key('target_dog_sheep_a'), angleDifference(state.target_a, state.sheep_a)))
 
         # distance
-        sheep_d_bin = binValue(sqrt(d_sheep), numbins_dist, 0, sqrt(nbins_max_dist))
-        sheep_target_d_bin = binValue(sqrt(state.sheep_t_d), numbins_dist, 0, sqrt(nbins_max_dist))
+        # sheep_d_bin = binValue(sqrt(d_sheep), numbins_dist, 0, sqrt(nbins_max_dist))
+        # sheep_target_d_bin = binValue(sqrt(state.sheep_t_d), numbins_dist, 0, sqrt(nbins_max_dist))
 
-        result.append((self.key('d_sheep={}'.format(sheep_d_bin)), 1))
-        result.append((self.key('d_sheep_target={}'.format(sheep_target_d_bin)), 1))
+        # result.append((self.key('d_sheep={}'.format(sheep_d_bin)), 1))
+        # result.append((self.key('d_sheep_target={}'.format(sheep_target_d_bin)), 1))
 
         # crossterms
-        result.append((self.key('da_sheep={}-{}'.format(sheep_d_bin, angle_bin)), 1))
-        result.append((self.key('da_target={}-{}'.format(sheep_target_d_bin, angle_bin)), 1))
+        # result.append((self.key('da_sheep={}-{}'.format(sheep_d_bin, angle_bin)), 1))
+        # result.append((self.key('da_target={}-{}'.format(sheep_target_d_bin, angle_bin)), 1))
 
         return result
 
-    def allSheepFeature(self, state, nbins_dist=6, nbins_angle=9):
+    def allSheepFeature(self, state, nbins_dist=5, nbins_angle=9, nbins_sheep_dist=3, K=4):
         '''
-        add locations of other sheep
+        Add features for the closest K sheep:
 
-        note this feature is sheepcentric
+        - binned angle difference
+        - binned distance
         '''
         result = Counter()
         # initialize bin settings
 
-        nbins_max_dist = 500
-        for sheep in state.sheep_locations:
-            distance, angle = Location(state.own_location[0], state.own_location[1]).da(sheep)
+        nbins_max_dist = 300
+        for k, ((distance, angle), _, sheep) in enumerate(state.sorted_sheep):
+            # only consider closest sheep
+            if k >= K: break
+            sheep_distance = sheep.loc.distance(state.target_location)
             angle_diff = angleDifference(state.target_a, angle)
             angle_bin = binValue(angle_diff, nbins_angle, -pi, pi)
             distance_bin = binValue(sqrt(distance), nbins_dist, 0, sqrt(nbins_max_dist))
-            # don't include min sheep
-            # if abs(angle_diff) > 0.001:
-            result[self.key('sheep_da_bins{}{}={}-{}'.format(nbins_dist, nbins_angle, distance_bin, angle_bin))] += 1
+            sheep_distance_bin = binValue(sqrt(sheep_distance), nbins_sheep_dist, 0, sqrt(nbins_max_dist))
+            result[self.key('sheep{}_da_bins{}{}={}-{}'.format(k, nbins_dist, nbins_angle, distance_bin, angle_bin))] += 1
 
         return result.items()
 
-    def allDogsFeature(self, state, nbins_dist=7, nbins_angle=7):
+    def allSheepDTargetFeature(self, state, nbins_sheep_dist=3):
+        '''
+        Bins the distance to target for every sheep
+        '''
+        result = Counter()
+        # initialize bin settings
+
+        nbins_max_dist = 300
+        for k, ((distance, angle), _, sheep) in enumerate(state.sorted_sheep):
+            # only consider closest sheep
+            if k > 4: break
+            sheep_distance = sheep.loc.distance(state.target_location)
+            sheep_distance_bin = binValue(sqrt(sheep_distance), nbins_sheep_dist, 0, sqrt(nbins_max_dist))
+
+            result['sheep{}_dtarget_bin={}'.format(k, sheep_distance_bin)] += 1
+
+        return result.items()
+
+    def allDogsFeature(self, state, nbins_dist=4, nbins_angle=7):
         '''
         add locations of other dogs
 
@@ -154,7 +174,7 @@ class SheepFeature(FeatureExtractor):
         # initialize bin settings
         nbins_angle = 7
         nbins_dist = 7
-        nbins_max_dist = 500
+        nbins_max_dist = 300
         for dog in state.dogs_locations:
             distance, angle = Location(state.own_location[0], state.own_location[1]).da(dog)
             angle_diff = angleDifference(state.sheep_a, angle)

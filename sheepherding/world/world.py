@@ -11,7 +11,7 @@ class World:
     World implements the structure of the simulation.
     It includes the sheep and dogs, the driver that draws the world etc.
     '''
-    def __init__(self, width, height, speed=1.0):
+    def __init__(self, width, height, speed=2.0):
         self.width = width
         self.height = height
         # don't initialize in border
@@ -27,6 +27,9 @@ class World:
 
         # target
         self.setTarget()
+
+        # world stores ai, needs to be set
+        self.ai = None
 
     def populateSheep(self, n_sheep):
         ''' populate the world with n_sheep sheep '''

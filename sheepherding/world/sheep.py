@@ -27,7 +27,7 @@ class Sheep(Animal):
             # the further away, the less the attractive force
             # note attraction is negative
             attraction = forceFunc(distance, 40.0, 1.0)
-            repulsion = forceFunc(distance, 5.0, 5.0)
+            repulsion = forceFunc(distance, 5.0, 4.0)
             total = repulsion - attraction
             return repulsion - attraction
 

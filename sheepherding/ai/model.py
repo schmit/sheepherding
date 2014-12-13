@@ -59,15 +59,15 @@ class StaticModel(LinearModel):
         self.weights['right:a_diff'] = -0.5
 
     def sheepWeights(self):
-        self.weights['angle=0:left'] = 1
-        self.weights['angle=1:left'] = 1
-        self.weights['angle=2:left'] = 1
+        self.weights['angle=0:away'] = 1
+        self.weights['angle=1:away'] = 1
+        self.weights['angle=2:away'] = 1
         self.weights['angle=3:left'] = 1
         self.weights['angle=4:towards'] = 1
         self.weights['angle=5:right'] = 1
-        self.weights['angle=6:right'] = 1
-        self.weights['angle=7:right'] = 1
-        self.weights['angle=8:right'] = 1
+        self.weights['angle=6:away'] = 1
+        self.weights['angle=7:away'] = 1
+        self.weights['angle=8:away'] = 1
 
 
 class NeuralModel(Model):
