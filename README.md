@@ -1,5 +1,5 @@
-Sheep herding
-=============
+Sheep herding (CS 221 project)
+==============================
 
 Python implementation of an AI that controls a dog or dogs that try to herd sheep to a target location.
 
